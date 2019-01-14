@@ -8,19 +8,22 @@ public class SoundManager : MonoBehaviour {
 
     FMOD.System _soundSystem;
 
+    private FMOD.Channel _channel;
+
     // Use this for initialization
-    private void Start()
+    private void Awake()
     {
         Init();
     }
     public void Init ()
     {
-        _soundSystem = SoundSystem.GetSoundSystem();
+        _soundSystem = SoundSystem.instance.GetSoundSystem();
+       
     }
 	
     public void Create(string path, FMOD.MODE mode, out FMOD.Sound sound)
     {
-        _soundSystem.createSound(path, mode | FMOD.MODE._3D, out sound);
+        SoundSystem.instance.ErrorCheck(_soundSystem.createSound(path, mode | FMOD.MODE._3D, out sound));
        
     }
 
@@ -28,31 +31,33 @@ public class SoundManager : MonoBehaviour {
     {
 
         _soundSystem.playSound(sound, channelGroup, paused, out channel);
-        channel.set3DAttributes(ref pos, ref vel , ref alt_pan_pos);
+        _channel = channel;
+        _channel.set3DAttributes(ref pos, ref vel , ref alt_pan_pos);
     }
 
     public void Stop()
     {
-
+       
+       SoundSystem.instance.ErrorCheck(_channel.stop());
     }
 
     void Pause(bool pause)
     {
-
+        SoundSystem.instance.ErrorCheck(_channel.setPaused(pause));
     }
 
     void ChangeVolume(float volume)
     {
-
+        SoundSystem.instance.ErrorCheck(_channel.setVolume(volume));
     }
     void ChangePanorama(float value)
     {
-
+        SoundSystem.instance.ErrorCheck(_channel.setPan(value));
     }
 
     void SetPitch(float value)
     {
-
+        SoundSystem.instance.ErrorCheck(_channel.setPitch(value));
     }
 
     void FadeIn(float time)

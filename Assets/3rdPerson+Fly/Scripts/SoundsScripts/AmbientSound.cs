@@ -8,34 +8,46 @@ public class AmbientSound : MonoBehaviour {
 
     public SoundManager _soundManager;
 
-    FMOD.VECTOR velocity;
-    FMOD.VECTOR alt_pan_pos;
+    private FMOD.VECTOR _position;
+    private FMOD.VECTOR _velocity ;
+    private FMOD.VECTOR _alt_pan_pos;
 
-    FMOD.Sound _sound;
-    FMOD.Channel _channel;
-    FMOD.ChannelGroup _channelGroup ;
+    private FMOD.Sound _sound;
+    private FMOD.Channel _channel;
+    private FMOD.ChannelGroup _channelGroup ;
 
     void Start () {
 
+       
         
        
         _channel = new Channel();
         _channelGroup = new FMOD.ChannelGroup();
-      
-        if(gameObject.GetComponent<Rigidbody>().velocity != null)
-            velocity =  SoundSystem.VectorToFmod(gameObject.GetComponent<Rigidbody>().velocity);
+        _velocity = new FMOD.VECTOR();
+        _alt_pan_pos = new FMOD.VECTOR();
+        _position = SoundSystem.instance.VectorToFmod(transform.position);
 
-        _soundManager.Create("../../Sounds/cafeteria.wav", FMOD.MODE.LOOP_NORMAL, out _sound);
-        _soundManager.Play(_sound, _channelGroup, false, out _channel, SoundSystem.VectorToFmod(transform.position), velocity, alt_pan_pos);
+        if (gameObject.GetComponent<Rigidbody>() != null)
+            _velocity =  SoundSystem.instance.VectorToFmod(gameObject.GetComponent<Rigidbody>().velocity);
+
+       
+
+        _soundManager.Create("Assets/3rdPerson+Fly/Sounds/cafeteria.wav", FMOD.MODE.LOOP_NORMAL, out _sound);
+        
+        _soundManager.Play(_sound, _channelGroup, false, out _channel, _position, _velocity, _alt_pan_pos);
 
        
 
        
     }
+
 	
 	// Update is called once per frame
-	void Update () {
-		
-        
-	}
+	void FixedUpdate () {
+
+        _position = SoundSystem.instance.VectorToFmod(transform.position);
+        _velocity = SoundSystem.instance.VectorToFmod(gameObject.GetComponent<Rigidbody>().velocity);
+
+        _channel.set3DAttributes(ref _position, ref _velocity, ref _alt_pan_pos);
+    }
 }

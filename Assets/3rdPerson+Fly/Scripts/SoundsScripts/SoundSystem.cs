@@ -1,14 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using FMODUnity;
+
+
 
 public class SoundSystem : MonoBehaviour{
 
+    public static SoundSystem instance = null;
+
     // FMOD LOW LEVEL API system object
-    public static FMOD.System lowlevelSystem;
+    private FMOD.System lowlevelSystem;
     // FMOD STUDIO system object
-    public static FMOD.Studio.System studioSystem;
+    private FMOD.Studio.System studioSystem;
 
     private FMOD.RESULT _result;
     // FMOD.Studio.CPU_USAGE _cpuUsage; // No hace falta ponerlo, se hace en el script RuntimeManager
@@ -30,6 +33,14 @@ public class SoundSystem : MonoBehaviour{
     // Use this for initialization
     void Init() {
 
+        if(instance == null)
+        {
+            instance = this;
+        }
+
+        // Specify that the game object with this behaviour doesn't gets destroyed when reloading the scene
+        DontDestroyOnLoad(gameObject);
+
         // Get the studio and low level systems from RuntimeManager, where them have been created
         studioSystem = FMODUnity.RuntimeManager.StudioSystem;
         lowlevelSystem = FMODUnity.RuntimeManager.LowlevelSystem;
@@ -43,11 +54,11 @@ public class SoundSystem : MonoBehaviour{
 
         Debug.Log("FMOD version: " + version);
 
-        System.IntPtr extradriverdata = new System.IntPtr(0);
+        //System.IntPtr extradriverdata = new System.IntPtr(0);
 
 
         // Initialize studio and low level system
-       // _result = studioSystem.initialize(128, FMOD.Studio.INITFLAGS.NORMAL, FMOD.INITFLAGS.NORMAL, extradriverdata);
+       //_result = studioSystem.initialize(128, FMOD.Studio.INITFLAGS.NORMAL, FMOD.INITFLAGS.NORMAL, extradriverdata);
         //ErrorCheck(_result);
         //_result = lowlevelSystem.init(128, FMOD.INITFLAGS.NORMAL, extradriverdata);
         //ErrorCheck(_result);
@@ -56,21 +67,35 @@ public class SoundSystem : MonoBehaviour{
         listenerPos = VectorToFmod(sceneListener.transform.position);
         listenerVel = VectorToFmod(sceneListener.GetComponent<Rigidbody>().velocity);
        
-        lowlevelSystem.set3DListenerAttributes(0,ref listenerPos,  ref listenerVel, ref fordward, ref up);
+        _result = lowlevelSystem.set3DListenerAttributes(0,ref listenerPos,  ref listenerVel, ref fordward, ref up);
+        ErrorCheck(_result);
+    }
+
+    void OnApplicationQuit()
+    {
+       //lowlevelSystem.close();
+        //lowlevelSystem.release();
     }
 
     // Get the low level system
-    static public FMOD.System GetSoundSystem()
+    public FMOD.System GetSoundSystem()
     {
         return lowlevelSystem;
     }
 
+    // Get the studio system
+    public FMOD.Studio.System GetStudioSoundSystem()
+    {
+        return studioSystem;
+    }
+
     // Errors checking
-    static public int ErrorCheck(FMOD.RESULT result)
+    public int ErrorCheck(FMOD.RESULT result)
     {
         if (result != FMOD.RESULT.OK)
         {
-            Debug.LogError("FMOD ERROR " + result);
+            Debug.LogError("FMOD ERROR " + FMOD.Error.String(result));
+            
             return 1;
         }
         // Debug.Log("FMOD good");
@@ -78,7 +103,7 @@ public class SoundSystem : MonoBehaviour{
     }
 
     // Converts an Unity vector3 into a FMOD VECTOR
-    public static FMOD.VECTOR VectorToFmod(Vector3 vPosition) {
+    public  FMOD.VECTOR VectorToFmod(Vector3 vPosition) {
 
         FMOD.VECTOR fVec;
         fVec.x = vPosition.x;
