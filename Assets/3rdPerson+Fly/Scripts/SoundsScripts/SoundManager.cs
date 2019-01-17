@@ -17,8 +17,7 @@ public class SoundManager : MonoBehaviour {
     }
     public void Init ()
     {
-        _soundSystem = SoundSystem.instance.GetSoundSystem();
-       
+        _soundSystem = SoundSystem.instance.GetSoundSystem();      
     }
 	
     public void Create(string path, FMOD.MODE mode, out FMOD.Sound sound)

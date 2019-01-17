@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using FMODUnity;
+using FMOD;
 
 
 public class SoundSystem : MonoBehaviour{
@@ -16,11 +17,12 @@ public class SoundSystem : MonoBehaviour{
     private FMOD.RESULT _result;
     // FMOD.Studio.CPU_USAGE _cpuUsage; // No hace falta ponerlo, se hace en el script RuntimeManager
 
-    public GameObject sceneListener; // EL JUGADOR¿? LA CAMARA NO TIENE VELOCIDAD, LA TIENE EL JUEGADOR
-    FMOD.VECTOR fordward;
+    public GameObject sceneListener; // EL JUGADOR¿? LA CAMARA NO TIENE VELOCIDAD, LA TIENE EL JUGADOR
+    private FMOD.ATTRIBUTES_3D _listenerAttributes3D;
+    /*FMOD.VECTOR fordward;
     FMOD.VECTOR up;
     FMOD.VECTOR listenerPos;
-    FMOD.VECTOR listenerVel;
+    FMOD.VECTOR listenerVel;*/
 
  
 
@@ -52,23 +54,36 @@ public class SoundSystem : MonoBehaviour{
         _result = lowlevelSystem.getVersion(out version);
         ErrorCheck(_result);
 
-        Debug.Log("FMOD version: " + version);
+        UnityEngine.Debug.Log("FMOD version: " + version);
 
         //System.IntPtr extradriverdata = new System.IntPtr(0);
 
 
         // Initialize studio and low level system
-       //_result = studioSystem.initialize(128, FMOD.Studio.INITFLAGS.NORMAL, FMOD.INITFLAGS.NORMAL, extradriverdata);
+        //_result = studioSystem.initialize(128, FMOD.Studio.INITFLAGS.NORMAL, FMOD.INITFLAGS.NORMAL, extradriverdata);
         //ErrorCheck(_result);
         //_result = lowlevelSystem.init(128, FMOD.INITFLAGS.NORMAL, extradriverdata);
         //ErrorCheck(_result);
 
 
-        listenerPos = VectorToFmod(sceneListener.transform.position);
-        listenerVel = VectorToFmod(sceneListener.GetComponent<Rigidbody>().velocity);
-       
-        _result = lowlevelSystem.set3DListenerAttributes(0,ref listenerPos,  ref listenerVel, ref fordward, ref up);
+        //listenerPos = VectorToFmod(sceneListener.transform.position);
+        //listenerVel = VectorToFmod(sceneListener.GetComponent<Rigidbody>().velocity);
+
+        _listenerAttributes3D = RuntimeUtils.To3DAttributes(sceneListener, sceneListener.GetComponent<Rigidbody>());       
+        _result = lowlevelSystem.set3DListenerAttributes(0,ref _listenerAttributes3D.position,  ref _listenerAttributes3D.velocity, ref _listenerAttributes3D.forward, ref _listenerAttributes3D.up);
         ErrorCheck(_result);
+
+       
+    }
+  
+    private void LateUpdate()
+    {
+        _listenerAttributes3D = RuntimeUtils.To3DAttributes(sceneListener, sceneListener.GetComponent<Rigidbody>());
+        _result = lowlevelSystem.set3DListenerAttributes(0, ref _listenerAttributes3D.position, ref _listenerAttributes3D.velocity, ref _listenerAttributes3D.forward, ref _listenerAttributes3D.up);
+        ErrorCheck(_result);
+
+        lowlevelSystem.update();
+        studioSystem.update();
     }
 
     void OnApplicationQuit()
@@ -94,7 +109,7 @@ public class SoundSystem : MonoBehaviour{
     {
         if (result != FMOD.RESULT.OK)
         {
-            Debug.LogError("FMOD ERROR " + FMOD.Error.String(result));
+            UnityEngine.Debug.LogError("FMOD ERROR " + FMOD.Error.String(result));
             
             return 1;
         }

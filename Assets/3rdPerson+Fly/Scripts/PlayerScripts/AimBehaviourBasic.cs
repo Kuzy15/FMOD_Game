@@ -10,14 +10,19 @@ public class AimBehaviourBasic : GenericBehaviour
 	public Vector3 aimPivotOffset = new Vector3(0.5f, 1.2f,  0f);         // Offset to repoint the camera when aiming.
 	public Vector3 aimCamOffset   = new Vector3(0f, 0.4f, -0.7f);         // Offset to relocate the camera when aiming.
 
-	private int aimBool;                                                  // Animator variable related to aiming.
+    private Vector2 hotSpot = Vector2.zero;
+
+    private int aimBool;                                                  // Animator variable related to aiming.
 	private bool aim;                                                     // Boolean to determine whether or not the player is aiming.
 
 	// Start is always called after any Awake functions.
 	void Start ()
 	{
-		// Set up the references.
-		aimBool = Animator.StringToHash("Aim");
+
+        Cursor.SetCursor(crosshair, hotSpot,CursorMode.ForceSoftware);       
+        Cursor.lockState = CursorLockMode.Locked;
+        // Set up the references.
+        aimBool = Animator.StringToHash("Aim");
 	}
 
 	// Update is used to set features regardless the active behaviour.
@@ -46,6 +51,7 @@ public class AimBehaviourBasic : GenericBehaviour
 		// Set aim boolean on the Animator Controller.
 		behaviourManager.GetAnim.SetBool (aimBool, aim);
 	}
+
 
 	// Co-rountine to start aiming mode with delay.
 	private IEnumerator ToggleAimOn()
@@ -126,10 +132,18 @@ public class AimBehaviourBasic : GenericBehaviour
 		if (crosshair)
 		{
 			float mag = behaviourManager.GetCamScript.GetCurrentPivotMagnitude(aimPivotOffset);
-			if (mag < 0.05f)
-				GUI.DrawTexture(new Rect(Screen.width / 2 - (crosshair.width * 0.5f),
-										 Screen.height / 2 - (crosshair.height * 0.5f),
-										 crosshair.width, crosshair.height), crosshair);
-		}
+            if (mag < 0.05f)
+            {
+                GUI.DrawTexture(new Rect(Screen.width / 2 - (crosshair.width * 0.5f),
+                                         Screen.height / 2 - (crosshair.height * 0.5f),
+                                         crosshair.width, crosshair.height), crosshair);
+                Cursor.visible = false;
+            }
+            else
+                Cursor.visible = true;
+
+
+
+        }
 	}
 }
