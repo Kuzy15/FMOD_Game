@@ -9,8 +9,9 @@ public class BasicBehaviour : MonoBehaviour
 	public float turnSmoothing = 0.06f;                   // Speed of turn when moving to match camera facing.
 	public float sprintFOV = 100f;                        // the FOV to use on the camera when player is sprinting.
 	public string sprintButton = "Sprint";                // Default sprint button input name.
+    public Texture2D crosshair;                           // Crosshair texture.
 
-	private float h;                                      // Horizontal Axis.
+    private float h;                                      // Horizontal Axis.
 	private float v;                                      // Vertical Axis.
 	private int currentBehaviour;                         // Reference to the current player behaviour.
 	private int defaultBehaviour;                         // The default behaviour of the player when any other is not active.
@@ -27,9 +28,10 @@ public class BasicBehaviour : MonoBehaviour
 	private Rigidbody rBody;                              // Reference to the player's rigidbody.
 	private int groundedBool;                             // Animator variable related to whether or not the player is on the ground.
 	private Vector3 colExtents;                           // Collider extents for ground test. 
+    private Vector2 hotSpot = Vector2.zero;
 
-	// Get current horizontal and vertical axes.
-	public float GetH { get { return h; } }
+    // Get current horizontal and vertical axes.
+    public float GetH { get { return h; } }
 	public float GetV { get { return v; } }
 
 	// Get the player camera script.
@@ -58,7 +60,10 @@ public class BasicBehaviour : MonoBehaviour
 		// Grounded verification variables.
 		groundedBool = Animator.StringToHash("Grounded");
 		colExtents = GetComponent<Collider>().bounds.extents;
-	}
+
+        Cursor.SetCursor(crosshair, hotSpot, CursorMode.ForceSoftware);
+        Cursor.lockState = CursorLockMode.Locked;
+    }
 
 	void Update()
 	{
@@ -336,7 +341,9 @@ public abstract class GenericBehaviour : MonoBehaviour
 	protected int behaviourCode;                   // The code that identifies a behaviour.
 	protected bool canSprint;                      // Boolean to store if the behaviour allows the player to sprint.
 
-	void Awake()
+    
+
+    void Awake()
 	{
 		// Set up the references.
 		behaviourManager = GetComponent<BasicBehaviour> ();
@@ -345,7 +352,8 @@ public abstract class GenericBehaviour : MonoBehaviour
 
 		// Set the behaviour code based on the inheriting class.
 		behaviourCode = this.GetType().GetHashCode();
-	}
+      
+    }
 
 	// Protected, virtual functions can be overridden by inheriting classes.
 	// The active behaviour will control the player actions with these functions:

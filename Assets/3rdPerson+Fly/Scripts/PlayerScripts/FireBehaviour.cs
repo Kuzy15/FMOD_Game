@@ -9,7 +9,6 @@ public class FireBehaviour :GenericBehaviour {
     public Transform spawnLocation;         // Position where the bullets are spawned.
     
 
-    //private int fireBool;                   // Animator variable related to shooting.
     private bool _shootable;                 // Boolean to determinate if the player can shoot.
     private float _bulletSpeed;              // Determine the bullet velocity.
     private float _spawnTime;                // Determine the time between the bullets spawn;
@@ -21,14 +20,14 @@ public class FireBehaviour :GenericBehaviour {
 
         // fireBool = Animator.StringToHash("Fire");
         _shootable = true;
-        _bulletSpeed = 500.0f;
+        _bulletSpeed = 70.0f;
         _spawnTime = 0.25f;
         _distance = 10;
         //behaviourManager.SubscribeBehaviour(this);
     }
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 
         // Get fire input.
         if (Input.GetButtonDown(fireButton) )

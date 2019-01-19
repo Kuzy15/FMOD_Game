@@ -5,12 +5,12 @@ using System.Collections;
 public class AimBehaviourBasic : GenericBehaviour
 {
 	public string aimButton = "Aim", shoulderButton = "Aim Shoulder";     // Default aim and switch shoulders buttons.
-	public Texture2D crosshair;                                           // Crosshair texture.
+	//public Texture2D crosshair;                                           // Crosshair texture.
 	public float aimTurnSmoothing = 0.15f;                                // Speed of turn response when aiming to match camera facing.
 	public Vector3 aimPivotOffset = new Vector3(0.5f, 1.2f,  0f);         // Offset to repoint the camera when aiming.
 	public Vector3 aimCamOffset   = new Vector3(0f, 0.4f, -0.7f);         // Offset to relocate the camera when aiming.
 
-    private Vector2 hotSpot = Vector2.zero;
+    //private Vector2 hotSpot = Vector2.zero;
 
     private int aimBool;                                                  // Animator variable related to aiming.
 	private bool aim;                                                     // Boolean to determine whether or not the player is aiming.
@@ -19,8 +19,9 @@ public class AimBehaviourBasic : GenericBehaviour
 	void Start ()
 	{
 
-        Cursor.SetCursor(crosshair, hotSpot,CursorMode.ForceSoftware);       
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.SetCursor(crosshair, hotSpot,CursorMode.ForceSoftware);       
+        //Cursor.lockState = CursorLockMode.Locked;
+  
         // Set up the references.
         aimBool = Animator.StringToHash("Aim");
 	}
@@ -128,7 +129,7 @@ public class AimBehaviourBasic : GenericBehaviour
 
  	// Draw the crosshair when aiming.
 	void OnGUI () 
-	{
+	{/*
 		if (crosshair)
 		{
 			float mag = behaviourManager.GetCamScript.GetCurrentPivotMagnitude(aimPivotOffset);
@@ -144,6 +145,6 @@ public class AimBehaviourBasic : GenericBehaviour
 
 
 
-        }
+        }*/
 	}
 }
