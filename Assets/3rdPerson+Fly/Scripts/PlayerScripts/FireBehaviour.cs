@@ -47,7 +47,7 @@ public class FireBehaviour :GenericBehaviour {
 
     }*/
 
-        IEnumerator Shooting()
+    IEnumerator Shooting()
     {
         yield return new WaitForSeconds(_spawnTime);
         _shootable = true;
@@ -63,7 +63,8 @@ public class FireBehaviour :GenericBehaviour {
         var newBullet = Instantiate(bullet, spawnLocation.position, spawnLocation.rotation);
         newBullet.transform.LookAt(position);
         newBullet.GetComponent<Rigidbody>().velocity = newBullet.transform.forward * _bulletSpeed;
-      
-       
+
+        // SONIDO DISPARO --------------------------------------------------------------------------------------------------------->
+
     }
 }

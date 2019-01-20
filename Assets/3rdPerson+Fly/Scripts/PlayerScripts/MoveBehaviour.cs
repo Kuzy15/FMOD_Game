@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 
+
+public enum State { IDLE, JUMP, WALK, RUN};
+
 // MoveBehaviour inherits from GenericBehaviour. This class corresponds to basic walk and run behaviour, it is the default behaviour.
 public class MoveBehaviour : GenericBehaviour
 {
@@ -16,6 +19,7 @@ public class MoveBehaviour : GenericBehaviour
 	private int groundedBool;                       // Animator variable related to whether or not the player is on ground.
 	private bool jump;                              // Boolean to determine whether or not the player started a jump.
 	private bool isColliding;                       // Boolean to determine if the player has collided with an obstacle.
+    private PlayerSoundsManager _playerSoundsManager;
 
 	// Start is always called after any Awake functions.
 	void Start() 
@@ -29,7 +33,10 @@ public class MoveBehaviour : GenericBehaviour
 		behaviourManager.SubscribeBehaviour (this);
 		behaviourManager.RegisterDefaultBehaviour (this.behaviourCode);
 		speedSeeker = runSpeed;
-	}
+
+        _playerSoundsManager = this.GetComponent<PlayerSoundsManager>();
+
+    }
 
 	// Update is used to set features regardless the active behaviour.
 	void Update ()
@@ -70,8 +77,13 @@ public class MoveBehaviour : GenericBehaviour
 				float velocity = 2f * Mathf.Abs(Physics.gravity.y) * jumpHeight;
 				velocity = Mathf.Sqrt(velocity);
 				behaviourManager.GetRigidBody.AddForce(Vector3.up * velocity, ForceMode.VelocityChange);
-			}
-		}
+
+            }
+
+            // SONIDO SALTO --------------------------------------------------------------------------------------------------------->
+
+            _playerSoundsManager.ChangeState(State.IDLE);
+        }
 		// Is already jumping?
 		else if (behaviourManager.GetAnim.GetBool(jumpBool))
 		{
@@ -91,8 +103,10 @@ public class MoveBehaviour : GenericBehaviour
 				jump = false;
 				behaviourManager.GetAnim.SetBool(jumpBool, false);
 				behaviourManager.UnlockTempBehaviour(this.behaviourCode);
-			}
-		}
+
+                // SONIDO TOCA EL SUELO --------------------------------------------------------------------------------------------------------->
+            }
+        }
 	}
 
 	// Deal with the basic player movement
@@ -108,16 +122,38 @@ public class MoveBehaviour : GenericBehaviour
 		// Set proper speed.
 		Vector2 dir = new Vector2(horizontal, vertical);
 		speed = Vector2.ClampMagnitude(dir, 1f).magnitude;
-		// This is for PC only, gamepads control speed via analog stick.
-		speedSeeker += Input.GetAxis("Mouse ScrollWheel");
-		speedSeeker = Mathf.Clamp(speedSeeker, walkSpeed, runSpeed);
-		speed *= speedSeeker;
-		if (behaviourManager.IsSprinting())
-		{
-			speed = sprintSpeed;
-		}
 
-		behaviourManager.GetAnim.SetFloat(speedFloat, speed, speedDampTime, Time.deltaTime);
+        if (horizontal != 0 || vertical != 0)
+        {
+            // SONIDO ANDAR --------------------------------------------------------------------------------------------------------->
+            if (!jump)
+            {
+
+                _playerSoundsManager.ChangeState(State.WALK);
+
+                /*// This is for PC only, gamepads control speed via analog stick.
+                speedSeeker += Input.GetAxis("Mouse ScrollWheel");
+                speedSeeker = Mathf.Clamp(speedSeeker, walkSpeed, runSpeed);*/
+
+                speed *= speedSeeker;
+
+                if (behaviourManager.IsSprinting() )
+                {
+                    speed = sprintSpeed;
+
+                    // SONIDO CORRER --------------------------------------------------------------------------------------------------------->
+
+                    _playerSoundsManager.ChangeState(State.RUN);
+                }
+            }
+        }
+        else
+        {
+            _playerSoundsManager.ChangeState(State.IDLE);
+            // NO HAY SONIDOS DEL JUGADO (IDLE) --------------------------------------------------------------------------------------------------------->
+        }
+
+        behaviourManager.GetAnim.SetFloat(speedFloat, speed, speedDampTime, Time.deltaTime);
 	}
 
 	// Rotate the player to match correct orientation, according to camera and key pressed.

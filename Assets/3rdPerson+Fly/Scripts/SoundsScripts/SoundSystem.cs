@@ -16,21 +16,17 @@ public class SoundSystem : MonoBehaviour{
 
     private FMOD.RESULT _result;
     // FMOD.Studio.CPU_USAGE _cpuUsage; // No hace falta ponerlo, se hace en el script RuntimeManager
-
+    
     public GameObject sceneListener; // EL JUGADOR¿? LA CAMARA NO TIENE VELOCIDAD, LA TIENE EL JUGADOR
     private FMOD.ATTRIBUTES_3D _listenerAttributes3D;
-    /*FMOD.VECTOR fordward;
-    FMOD.VECTOR up;
-    FMOD.VECTOR listenerPos;
-    FMOD.VECTOR listenerVel;*/
-
+   
  
 
-    void Awake()
+   void Awake()
     {
         Init();             
     }
-
+   
    
     // Use this for initialization
     void Init() {
@@ -38,10 +34,10 @@ public class SoundSystem : MonoBehaviour{
         if(instance == null)
         {
             instance = this;
+            // Specify that the game object with this behaviour doesn't gets destroyed when reloading the scene
+            DontDestroyOnLoad(gameObject);
         }
 
-        // Specify that the game object with this behaviour doesn't gets destroyed when reloading the scene
-        DontDestroyOnLoad(gameObject);
 
         // Get the studio and low level systems from RuntimeManager, where them have been created
         studioSystem = FMODUnity.RuntimeManager.StudioSystem;
@@ -56,9 +52,8 @@ public class SoundSystem : MonoBehaviour{
 
         UnityEngine.Debug.Log("FMOD version: " + version);
 
+
         //System.IntPtr extradriverdata = new System.IntPtr(0);
-
-
         // Initialize studio and low level system
         //_result = studioSystem.initialize(128, FMOD.Studio.INITFLAGS.NORMAL, FMOD.INITFLAGS.NORMAL, extradriverdata);
         //ErrorCheck(_result);
@@ -66,8 +61,6 @@ public class SoundSystem : MonoBehaviour{
         //ErrorCheck(_result);
 
 
-        //listenerPos = VectorToFmod(sceneListener.transform.position);
-        //listenerVel = VectorToFmod(sceneListener.GetComponent<Rigidbody>().velocity);
 
         _listenerAttributes3D = RuntimeUtils.To3DAttributes(sceneListener, sceneListener.GetComponent<Rigidbody>());       
         _result = lowlevelSystem.set3DListenerAttributes(0,ref _listenerAttributes3D.position,  ref _listenerAttributes3D.velocity, ref _listenerAttributes3D.forward, ref _listenerAttributes3D.up);

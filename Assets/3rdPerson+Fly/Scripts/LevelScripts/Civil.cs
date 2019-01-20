@@ -22,8 +22,7 @@ public class Civil : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     { 
-        // Llamar al game over del level manager
-
+        
         if (collision.gameObject.GetComponent<Bullet>() != null)
         {          
             Destroy(gameObject);

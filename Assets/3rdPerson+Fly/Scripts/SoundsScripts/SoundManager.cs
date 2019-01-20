@@ -40,21 +40,21 @@ public class SoundManager : MonoBehaviour {
        SoundSystem.instance.ErrorCheck(_channel.stop());
     }
 
-    void Pause(bool pause)
+    public void Pause(bool pause)
     {
         SoundSystem.instance.ErrorCheck(_channel.setPaused(pause));
     }
 
-    void ChangeVolume(float volume)
+    public void ChangeVolume(float volume)
     {
         SoundSystem.instance.ErrorCheck(_channel.setVolume(volume));
     }
-    void ChangePanorama(float value)
+    public void ChangePanorama(float value)
     {
         SoundSystem.instance.ErrorCheck(_channel.setPan(value));
     }
 
-    void SetPitch(float value)
+    public void SetPitch(float value)
     {
         SoundSystem.instance.ErrorCheck(_channel.setPitch(value));
     }

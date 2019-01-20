@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour {
     // Use this for initialization
     void Awake()
     {
-
+       
         if (instance == null)
         {
             instance = this;
@@ -21,12 +21,19 @@ public class GameManager : MonoBehaviour {
 
             DontDestroyOnLoad(gameObject);
         }
+
+        Debug.Log(_level);
     }
 
-	// Update is called once per frame
+	/*// Update is called once per frame
 	void Update () {
 		
-	}
+	}*/
+
+    public int GetLevel()
+    {
+        return _level;
+    }
 
     public void NextLevel() // Pass to the next level
     {
@@ -53,19 +60,19 @@ public class GameManager : MonoBehaviour {
         switch (_level) // En principio 5 niveles
         {
             case 1:
-                num = 3;
+                num = 1;
                 break;
             case 2:
-                num = 3;
+                num = 2;
                 break;
             case 3:
-                num = 5;
+                num = 3;
                 break;
             case 4:
-                num = 5;
+                num = 3;
                 break;
             case 5:
-                num = 7;
+                num = 4;
                 break;
         }
 
@@ -80,8 +87,8 @@ public class GameManager : MonoBehaviour {
         switch (_level) // En principio 5 niveles
         {
             case 1:
-                tSpawn = 10.0f;
-                tShowing = 5.0f;
+                tSpawn = 5.0f;
+                tShowing = 3.0f;
                 break;
             case 2:
                 tSpawn = 7.0f;
@@ -89,7 +96,7 @@ public class GameManager : MonoBehaviour {
                 break;
             case 3:
                 tSpawn = 7.0f;
-                tShowing = 4.0f;
+                tShowing = 3.0f;
                 break;
             case 4:
                 tSpawn = 8.0f;
@@ -97,7 +104,7 @@ public class GameManager : MonoBehaviour {
                 break;
             case 5:
                 tSpawn = 8.0f;
-                tShowing = 7.0f;
+                tShowing = 6.0f;
                 break;
         }
     }

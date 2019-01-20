@@ -15,7 +15,8 @@ public class CharacterSpawn : MonoBehaviour {
 	// Use this for initialization
 	public void Init (LevelManager lm, float timeToSpawn, float timeShowing)
     {
-        gameObject.SetActive(true);
+       
+         gameObject.SetActive(true);
         _levelManager = lm;
         _timeToSpawn = timeToSpawn;
         _timePassed = _timeToSpawn;
@@ -31,7 +32,7 @@ public class CharacterSpawn : MonoBehaviour {
         {
             _timePassed = _timeToSpawn;
             
-            //
+            
             int rnd = Random.Range(0, 10);
             if (rnd <= 3)
             {
@@ -48,6 +49,3 @@ public class CharacterSpawn : MonoBehaviour {
         }
 	}
 }
-
-
-// var spawn = Instantiate este objeto para cada nively segun el nivel, y hacer spawn.Init(timeToSpawn
