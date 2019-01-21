@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.10.00">
+    <object class="AudioFile" id="{134af3d3-0522-4e51-826e-8cef7022c0c2}">
+        <property name="assetPath">
+            <value>HelloEnemy.wav</value>
+        </property>
+        <property name="frequencyInKHz">
+            <value>44.0999985</value>
+        </property>
+        <property name="channelCount">
+            <value>2</value>
+        </property>
+        <property name="length">
+            <value>1.6729024943310657</value>
+        </property>
+        <relationship name="masterAssetFolder">
+            <destination>{91bf5acc-2730-4560-97dd-4a30de23dd97}</destination>
+        </relationship>
+    </object>
+</objects>

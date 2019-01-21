@@ -20,6 +20,9 @@ public class SoundManager : MonoBehaviour {
         _soundSystem = SoundSystem.instance.GetSoundSystem();      
     }
 	
+
+
+    // HACER: CREAR Y REPRODUCIR EVENTOS 3D O SIN POSICIONAMIENTO (CREATE3D(), PLAY3D())
     public void Create(string path, FMOD.MODE mode, out FMOD.Sound sound)
     {
         SoundSystem.instance.ErrorCheck(_soundSystem.createSound(path, mode | FMOD.MODE._3D, out sound));
@@ -57,15 +60,5 @@ public class SoundManager : MonoBehaviour {
     public void SetPitch(float value)
     {
         SoundSystem.instance.ErrorCheck(_channel.setPitch(value));
-    }
-
-    void FadeIn(float time)
-    {
-
-    }
-
-    void FadeOut(float time)
-    {
-
     }
 }

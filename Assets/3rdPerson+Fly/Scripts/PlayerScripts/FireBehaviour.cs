@@ -13,7 +13,7 @@ public class FireBehaviour :GenericBehaviour {
     private float _bulletSpeed;              // Determine the bullet velocity.
     private float _spawnTime;                // Determine the time between the bullets spawn;
     private float _distance;
-
+    private PlayerSoundsManager _playerSoundsManager;
 
     // Use this for initialization
     void Start () {
@@ -24,6 +24,8 @@ public class FireBehaviour :GenericBehaviour {
         _spawnTime = 0.25f;
         _distance = 10;
         //behaviourManager.SubscribeBehaviour(this);
+
+        _playerSoundsManager = this.GetComponent<PlayerSoundsManager>();
     }
 	
 	// Update is called once per frame
@@ -66,5 +68,6 @@ public class FireBehaviour :GenericBehaviour {
 
         // SONIDO DISPARO --------------------------------------------------------------------------------------------------------->
 
+        _playerSoundsManager.PlayShootSound();
     }
 }

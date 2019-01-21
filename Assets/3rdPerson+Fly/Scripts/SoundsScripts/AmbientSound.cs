@@ -8,6 +8,7 @@ public class AmbientSound : MonoBehaviour {
 
     public SoundManager _soundManager;
     public string soundName;
+    public float volume;
     
     private FMOD.VECTOR _alt_pan_pos;
     private Rigidbody _rigidBody;
@@ -35,11 +36,11 @@ public class AmbientSound : MonoBehaviour {
 
         _soundManager.Create(path, FMOD.MODE.LOOP_NORMAL, out _sound);
         _soundManager.Play(_sound, _channelGroup, false, out _channel, _attributes3D.position, _attributes3D.velocity, _alt_pan_pos);
-        _soundManager.ChangeVolume(0.1f);
+        _soundManager.ChangeVolume(volume);
         
         // minDistance: distancia a partir de la cual el sonido comienza a atenuarse
         // maxDistance: distancia a partir de la cual el sonido no se atenúa más (el volumen no es necesariamente 0.0)   
-       // _channel.set3DMinMaxDistance(1.0f, 500.0f);
+       _channel.set3DMinMaxDistance(3.0f, 40.0f);
 
 
     }

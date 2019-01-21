@@ -8,7 +8,7 @@ public class LevelManager : MonoBehaviour {
 
     private int _numEnemies; // Amount of enemies to kill depending on the current level
     private int _enemiesKilled; // Amount of enemies killed at the moment
-    private float tSpawn, tShowing;
+    private float tSpawn, tShowing;   
 
     // Use this for initialization
     void Start () {
@@ -51,11 +51,8 @@ public class LevelManager : MonoBehaviour {
                 GameManager.instance.NextLevel();
                 InitLevel();
             }
+          
             
-
-
-            //SceneManager.LoadScene(0); // Cambiar despues los indice de las escenas y hacerlo con botones del menu.
-
             // Aparecer un menu con la opcion de pasar al siguiente nivel o salir,...
         }
     }

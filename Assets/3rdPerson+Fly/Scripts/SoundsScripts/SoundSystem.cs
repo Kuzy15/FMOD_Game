@@ -62,7 +62,9 @@ public class SoundSystem : MonoBehaviour{
 
 
 
-        _listenerAttributes3D = RuntimeUtils.To3DAttributes(sceneListener, sceneListener.GetComponent<Rigidbody>());       
+        _listenerAttributes3D = RuntimeUtils.To3DAttributes(sceneListener, sceneListener.GetComponent<Rigidbody>());
+        _result = studioSystem.setListenerAttributes(0, _listenerAttributes3D);
+        ErrorCheck(_result);
         _result = lowlevelSystem.set3DListenerAttributes(0,ref _listenerAttributes3D.position,  ref _listenerAttributes3D.velocity, ref _listenerAttributes3D.forward, ref _listenerAttributes3D.up);
         ErrorCheck(_result);
 
@@ -72,6 +74,8 @@ public class SoundSystem : MonoBehaviour{
     private void LateUpdate()
     {
         _listenerAttributes3D = RuntimeUtils.To3DAttributes(sceneListener, sceneListener.GetComponent<Rigidbody>());
+        _result = studioSystem.setListenerAttributes(0, _listenerAttributes3D);
+        ErrorCheck(_result);
         _result = lowlevelSystem.set3DListenerAttributes(0, ref _listenerAttributes3D.position, ref _listenerAttributes3D.velocity, ref _listenerAttributes3D.forward, ref _listenerAttributes3D.up);
         ErrorCheck(_result);
 
@@ -79,11 +83,25 @@ public class SoundSystem : MonoBehaviour{
         studioSystem.update();
     }
 
+    // Only for an application build not for editor
+/*
+#if !UNITY_EDITOR
     void OnApplicationQuit()
     {
-       //lowlevelSystem.close();
+        //lowlevelSystem.close();
         //lowlevelSystem.release();
+        //studioSystem.release();
     }
+#else
+    private void OnDestroy()
+    {
+        lowlevelSystem.close();
+        lowlevelSystem.release();
+        studioSystem.release();
+    }
+#endif
+*/
+
 
     // Get the low level system
     public FMOD.System GetSoundSystem()

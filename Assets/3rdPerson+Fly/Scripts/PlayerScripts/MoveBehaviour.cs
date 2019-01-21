@@ -19,6 +19,7 @@ public class MoveBehaviour : GenericBehaviour
 	private int groundedBool;                       // Animator variable related to whether or not the player is on ground.
 	private bool jump;                              // Boolean to determine whether or not the player started a jump.
 	private bool isColliding;                       // Boolean to determine if the player has collided with an obstacle.
+    //private bool _finishedJump;
     private PlayerSoundsManager _playerSoundsManager;
 
 	// Start is always called after any Awake functions.
@@ -34,6 +35,7 @@ public class MoveBehaviour : GenericBehaviour
 		behaviourManager.RegisterDefaultBehaviour (this.behaviourCode);
 		speedSeeker = runSpeed;
 
+        //_finishedJump = false;
         _playerSoundsManager = this.GetComponent<PlayerSoundsManager>();
 
     }
@@ -41,6 +43,12 @@ public class MoveBehaviour : GenericBehaviour
 	// Update is used to set features regardless the active behaviour.
 	void Update ()
 	{
+        /*if (_finishedJump)
+        {
+            _finishedJump = false;
+            _playerSoundsManager.ChangeState(State.JUMP);
+        }*/
+
 		// Get jump input.
 		if (!jump && Input.GetButtonDown(jumpButton) && behaviourManager.IsCurrentBehaviour(this.behaviourCode) && !behaviourManager.IsOverriding())
 		{
@@ -61,52 +69,57 @@ public class MoveBehaviour : GenericBehaviour
 	// Execute the idle and walk/run jump movements.
 	void JumpManagement()
 	{
-		// Start a new jump.
-		if (jump && !behaviourManager.GetAnim.GetBool(jumpBool) && behaviourManager.IsGrounded())
-		{
-			// Set jump related parameters.
-			behaviourManager.LockTempBehaviour(this.behaviourCode);
-			behaviourManager.GetAnim.SetBool(jumpBool, true);
-			// Is a locomotion jump?
-			if(behaviourManager.GetAnim.GetFloat(speedFloat) > 0.1)
-			{
-				// Temporarily change player friction to pass through obstacles.
-				GetComponent<CapsuleCollider>().material.dynamicFriction = 0f;
-				GetComponent<CapsuleCollider>().material.staticFriction = 0f;
-				// Set jump vertical impulse velocity.
-				float velocity = 2f * Mathf.Abs(Physics.gravity.y) * jumpHeight;
-				velocity = Mathf.Sqrt(velocity);
-				behaviourManager.GetRigidBody.AddForce(Vector3.up * velocity, ForceMode.VelocityChange);
+        // Start a new jump.
+        if (jump && !behaviourManager.GetAnim.GetBool(jumpBool) && behaviourManager.IsGrounded())
+        {
+            //_finishedJump = false;
+
+
+            // Is a locomotion jump?
+            if (behaviourManager.GetAnim.GetFloat(speedFloat) > 0.1)
+            {
+                // Set jump related parameters.
+                behaviourManager.LockTempBehaviour(this.behaviourCode);
+                behaviourManager.GetAnim.SetBool(jumpBool, true);
+
+                // Temporarily change player friction to pass through obstacles.
+                GetComponent<CapsuleCollider>().material.dynamicFriction = 0f;
+                GetComponent<CapsuleCollider>().material.staticFriction = 0f;
+                // Set jump vertical impulse velocity.
+                float velocity = 2f * Mathf.Abs(Physics.gravity.y) * jumpHeight;
+                velocity = Mathf.Sqrt(velocity);
+                behaviourManager.GetRigidBody.AddForce(Vector3.up * velocity, ForceMode.VelocityChange);
 
             }
+            else
+                jump = false;
 
             // SONIDO SALTO --------------------------------------------------------------------------------------------------------->
-
-            _playerSoundsManager.ChangeState(State.IDLE);
+            _playerSoundsManager.ChangeState(State.JUMP);
         }
-		// Is already jumping?
-		else if (behaviourManager.GetAnim.GetBool(jumpBool))
-		{
-			// Keep forward movement while in the air.
-			if (!behaviourManager.IsGrounded() && !isColliding && behaviourManager.GetTempLockStatus())
-			{
-				behaviourManager.GetRigidBody.AddForce(transform.forward * jumpIntertialForce * Physics.gravity.magnitude * sprintSpeed, ForceMode.Acceleration);
-			}
-			// Has landed?
-			if ((behaviourManager.GetRigidBody.velocity.y < 0) && behaviourManager.IsGrounded())
-			{
-				behaviourManager.GetAnim.SetBool(groundedBool, true);
-				// Change back player friction to default.
-				GetComponent<CapsuleCollider>().material.dynamicFriction = 0.6f;
-				GetComponent<CapsuleCollider>().material.staticFriction = 0.6f;
-				// Set jump related parameters.
-				jump = false;
-				behaviourManager.GetAnim.SetBool(jumpBool, false);
-				behaviourManager.UnlockTempBehaviour(this.behaviourCode);
-
-                // SONIDO TOCA EL SUELO --------------------------------------------------------------------------------------------------------->
+        // Is already jumping?
+        else if (behaviourManager.GetAnim.GetBool(jumpBool))
+        {
+            
+            // Keep forward movement while in the air.
+            if (!behaviourManager.IsGrounded() && !isColliding && behaviourManager.GetTempLockStatus())
+            {
+                behaviourManager.GetRigidBody.AddForce(transform.forward * jumpIntertialForce * Physics.gravity.magnitude * sprintSpeed, ForceMode.Acceleration);
+            }
+            // Has landed?
+            if ((behaviourManager.GetRigidBody.velocity.y < 0) && behaviourManager.IsGrounded())
+            {
+                behaviourManager.GetAnim.SetBool(groundedBool, true);
+                // Change back player friction to default.
+                GetComponent<CapsuleCollider>().material.dynamicFriction = 0.6f;
+                GetComponent<CapsuleCollider>().material.staticFriction = 0.6f;
+                // Set jump related parameters.
+                jump = false;
+                behaviourManager.GetAnim.SetBool(jumpBool, false);
+                behaviourManager.UnlockTempBehaviour(this.behaviourCode);
             }
         }
+
 	}
 
 	// Deal with the basic player movement
@@ -127,9 +140,7 @@ public class MoveBehaviour : GenericBehaviour
         {
             // SONIDO ANDAR --------------------------------------------------------------------------------------------------------->
             if (!jump)
-            {
-
-                _playerSoundsManager.ChangeState(State.WALK);
+            {           
 
                 /*// This is for PC only, gamepads control speed via analog stick.
                 speedSeeker += Input.GetAxis("Mouse ScrollWheel");
@@ -145,6 +156,8 @@ public class MoveBehaviour : GenericBehaviour
 
                     _playerSoundsManager.ChangeState(State.RUN);
                 }
+                else
+                    _playerSoundsManager.ChangeState(State.WALK);
             }
         }
         else
